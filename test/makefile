@@ -4,6 +4,10 @@ DC?=dmd
 SRC:=$(shell find ../src/ -name "*.d")
 
 ifeq ($(DC), ldc2)
+  FLAGS:=-unittest -main -g -cov -I../src/ --d-debug -wi
+  hashmap_gc_test_FLAGS:=-g -O3 --d-debug -wi
+  looptest_FLAGS:=-O3
+else ifeq ($(DC), ldmd2)
   FLAGS:=-unittest -main -g -cov -I../src/ -d-debug -wi
   hashmap_gc_test_FLAGS:=-g -O3 -d-debug -wi
   looptest_FLAGS:=-O3

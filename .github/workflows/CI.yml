@@ -3,7 +3,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   Test:
@@ -13,24 +13,27 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-20.04
-          - windows-2019
-          - macos-10.15
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
         d:
-          - "ldc-1.27.1"
-          - "dmd-2.097.2"
+          - "ldc-latest"
+          - "dmd-master"
         meson:
-          - 0.59.1
+          - 1.8.0
         ninja:
-          - 1.10.2
+          - latest
+        exclude:
+          - os: macos-latest
+            d: "dmd-master"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
           submodules: recursive
 
       # Cache
       - name: Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ~/.dub
@@ -42,7 +45,7 @@ jobs:
       # Setup compilers and tools
 
       - name: Setup D
-        uses: dlang-community/setup-dlang@v1
+        uses: dlang-community/setup-dlang@v2
         with:
           compiler: ${{ matrix.d }}
 
@@ -54,10 +57,9 @@ jobs:
         run: pip install meson==${{ matrix.meson }}
 
       - name: Setup Ninja
-        uses: aminya/install-cmake@new-versions-and-arch
+        uses: lukka/get-cmake@latest
         with:
-          cmake: false
-          ninja: ${{ matrix.ninja }}
+          ninjaVersion: ${{ matrix.ninja }}
 
       # Build and Test
 
